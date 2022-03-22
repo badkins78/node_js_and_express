@@ -5,7 +5,7 @@ app.use(express.json())
 let notes = [
 {
   id: 1,
-  content: "HTML is easey",
+  content: "HTML is easy",
   date: "2022-03-14",
   important: true
 },
@@ -34,7 +34,6 @@ if(!body.content){
     error: 'content-missing'
   })
 }
-
 const note = {
   content: body.content,
   important: body.important || false,
@@ -68,6 +67,18 @@ app.delete('/api/notes/:id', (request, response) => {
 
   response.status(204).end()
 })
+const requestLogger = (request, response, next) => {
+  console.log('Method:  ', request.method)
+  console.log('Path:  ', request.path )
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+app.use(requestLogger)
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: 'unknown endpoint'})
+}
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT)
